@@ -1,0 +1,12 @@
+{
+    "$schema": "https://raw.githubusercontent.com/microsoft/vcpkg/master/scripts/vcpkg.schema.json",
+    "name": "skyspec-common",
+    "version-string": "0.0.1",
+    "description": "Common SkySpec code used by test suite adapters, e.g. skyspec-bandit",
+    "homepage": "https://github.com/mrowrpurr/SkySpec",
+    "license": "MIT",
+    "supports": "windows & x64",
+    "dependencies": [
+        { "name": "vcpkg-cmake-config", "host": true }
+    ]
+}
