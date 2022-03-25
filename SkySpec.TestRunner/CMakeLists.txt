@@ -18,24 +18,38 @@ target_include_directories(SkySpecRunner PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/inc
 #if("${CMAKE_SOURCE_DIR}" STREQUAL "${CMAKE_CURRENT_SOURCE_DIR}")
 #endif()
 
-install(
-	TARGETS "${PROJECT_NAME}"
-	EXPORT "${PROJECT_NAME}-targets"
+#install(
+#	TARGETS "${PROJECT_NAME}"
+#	EXPORT "${PROJECT_NAME}-targets"
+#)
+#
+#install(
+#	EXPORT "${PROJECT_NAME}-targets"
+#	NAMESPACE "${PROJECT_NAME}::"
+#	DESTINATION "${CMAKE_INSTALL_LIBDIR}/cmake/${PROJECT_NAME}"
+#)
+#
+#install(
+#	FILES "${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}Config.cmake"
+#	DESTINATION "${CMAKE_INSTALL_LIBDIR}/cmake/${PROJECT_NAME}"
+#)
+#
+#install(
+#	DIRECTORY
+#		"include/SkySpec"
+#	DESTINATION "${CMAKE_INSTALL_INCLUDEDIR}"
+#)
+
+install(TARGETS SkySpecRunner
+	EXPORT SkySpecRunner-config
+	ARCHIVE DESTINATION lib
+	LIBRARY DESTINATION lib
+	RUNTIME DESTINATION bin
 )
 
-install(
-	EXPORT "${PROJECT_NAME}-targets"
-	NAMESPACE "${PROJECT_NAME}::"
-	DESTINATION "${CMAKE_INSTALL_LIBDIR}/cmake/${PROJECT_NAME}"
+install(EXPORT SkySpecRunner-config
+	FILE SkySpecRunner-config.cmake
+	NAMESPACE SkySpecRunner::
+	DESTINATION lib/cmake/SkySpecRunner
 )
 
-install(
-	FILES "${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}Config.cmake"
-	DESTINATION "${CMAKE_INSTALL_LIBDIR}/cmake/${PROJECT_NAME}"
-)
-
-install(
-	DIRECTORY
-		"include/SkySpec"
-	DESTINATION "${CMAKE_INSTALL_INCLUDEDIR}"
-)
