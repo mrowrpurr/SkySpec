@@ -192,8 +192,8 @@ namespace SkySpec::Server {
         }
     };
 
-    __declspec(dllexport) void RegisterTestSuite(const std::string& testSuiteName, std::function<void()> testSuiteRunnerFn);
-    __declspec(dllexport) void NotifyText(const std::string& text);
-    __declspec(dllexport) void NotifyTestPassed(const std::string& testName);
-    __declspec(dllexport) void NotifyTestFailed(const std::string& testName);
+    extern "C" __declspec(dllexport) void RegisterTestSuite(const std::string& testSuiteName, std::function<void()> testSuiteRunnerFn);
+    extern "C" __declspec(dllexport) void NotifyText(const std::string& text);
+    extern "C" __declspec(dllexport) void NotifyTestPassed(const std::string& testName);
+    extern "C" __declspec(dllexport) void NotifyTestFailed(const std::string& testName);
 }

@@ -13,6 +13,7 @@ target_include_directories(SkySpec_Example_Bandit PRIVATE ${CMAKE_CURRENT_SOURCE
 
 target_link_libraries(SkySpec_Example_Bandit PRIVATE SkySpecServer)
 target_include_directories(SkySpec_Example_Bandit PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/../../SkySpec.Server/include) # <--- FIXME
+target_include_directories(SkySpec_Example_Bandit PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/../SkySpec.Papyrus/include) # <-- FIXME
 
 find_package(CommonLibSSE CONFIG REQUIRED)
 target_link_libraries(SkySpec_Example_Bandit PRIVATE CommonLibSSE::CommonLibSSE)
