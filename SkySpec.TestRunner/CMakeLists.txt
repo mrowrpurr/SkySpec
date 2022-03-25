@@ -15,8 +15,8 @@ add_library(SkySpecRunner ${SkySpecRunner_Files})
 target_sources(SkySpecRunner PRIVATE ${SkySpecRunner_Cpp})
 target_include_directories(SkySpecRunner PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/include)
 
-#if("${CMAKE_SOURCE_DIR}" STREQUAL "${CMAKE_CURRENT_SOURCE_DIR}")
-#endif()
+
+
 
 install(TARGETS SkySpecRunner
 	EXPORT SkySpecRunner-config
@@ -31,10 +31,33 @@ install(EXPORT SkySpecRunner-config
 	DESTINATION lib/cmake/SkySpecRunner
 )
 
-install(FILES ${SkySpec_Runner_Headers} DESTINATION include)
+install(FILES ${SkySpecRunner_Headers} DESTINATION include)
 
-install(
-	DIRECTORY
-		"include/SkySpec"
-	DESTINATION "${CMAKE_INSTALL_INCLUDEDIR}"
-)
+
+
+
+
+
+#if("${CMAKE_SOURCE_DIR}" STREQUAL "${CMAKE_CURRENT_SOURCE_DIR}")
+#endif()
+
+#install(TARGETS SkySpecRunner
+#	EXPORT SkySpecRunner-config
+#	ARCHIVE DESTINATION lib
+#	LIBRARY DESTINATION lib
+#	RUNTIME DESTINATION bin
+#)
+#
+#install(EXPORT SkySpecRunner-config
+#	FILE SkySpecRunner-config.cmake
+#	NAMESPACE SkySpecRunner::
+#	DESTINATION lib/cmake/SkySpecRunner
+#)
+#
+#install(FILES ${SkySpecRunner_Headers} DESTINATION include)
+#
+#install(
+#	DIRECTORY
+#		"include/SkySpec"
+#	DESTINATION "${CMAKE_INSTALL_INCLUDEDIR}"
+#)
