@@ -1,1 +1,2 @@
 add_subdirectory(Bandit)
+add_subdirectory(Papyrus)

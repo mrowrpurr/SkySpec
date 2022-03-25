@@ -133,6 +133,7 @@ namespace SkySpec::Server {
         void RunServer() {
             _webSocketServer.set_message_handler([](connection_hdl connection, WebSocketMessagePtr message){
                 auto messageText = message->get_payload();
+                RE::ConsoleLog::GetSingleton()->Print(std::format("WEBSOCKET MSG: '{}'\n", messageText).c_str());
                 if (messageText == "Quit") {
                     ExitProcess(0);
                 } else if (messageText.find("RunTestSuite:") == 0 && messageText.length() > 13) {
