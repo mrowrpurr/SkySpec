@@ -7,6 +7,7 @@
     "license": "MIT",
     "supports": "windows & x64",
     "dependencies": [
-        { "name": "vcpkg-cmake-config", "host": true }
+        { "name": "vcpkg-cmake-config", "host": true },
+        "commonlibae"
     ]
 }
