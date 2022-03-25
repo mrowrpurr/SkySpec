@@ -24,10 +24,9 @@ if("${CMAKE_SOURCE_DIR}" STREQUAL "${CMAKE_CURRENT_SOURCE_DIR}")
         RUNTIME DESTINATION bin
     )
 
-    # Namespace was just ${project_name}::
     install(EXPORT skyspec-runner-config
         FILE skyspec-runner-config.cmake
-        NAMESPACE SkySpec::Runner
+        NAMESPACE SkySpec_Runner::
         DESTINATION lib/cmake/skyspec-runner
     )
 
