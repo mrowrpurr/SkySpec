@@ -1,18 +1,21 @@
 #pragma once
 
-#pragma warning(push)
-#include <RE/Skyrim.h>
-#include <REL/Relocation.h>
-#include <SKSE/SKSE.h>
-
 #include <atomic>
 #include <chrono>
 #include <functional>
+#include <utility>
+
+#pragma warning(push)
+#include <RE/Skyrim.h>
+#include <RE/C/ConsoleLog.h>
+#include <REL/Relocation.h>
+#include <SKSE/SKSE.h>
+
 #include <websocketpp/server.hpp>
 #include <websocketpp/config/asio_no_tls.hpp>
 #include <websocketpp/common/connection_hdl.hpp>
-#include <utility>
-#include <RE/C/ConsoleLog.h>
+
+#include <SkySpec/PapyrusSpec.h>
 
 using namespace websocketpp;
 using namespace std::chrono_literals;
@@ -42,20 +45,26 @@ namespace SkySpec::Server {
         std::function<void()> GetTestSuiteRunnerFunction(const std::string& testSuiteName) { return _testSuiteRunnerFunctions[testSuiteName]; }
     };
 
+    enum TestRunType { SKSE, Papyrus };
+
     // Server which orchestrates running test suites (by name)
     class SpecServer {
+
         WebSocketServer _webSocketServer;
 
         // Get unique identifier for each test run
         std::atomic<int> _testRun_NextId;
 
-        int _testRun_CurrentId;
+        int _testRun_CurrentId = 0;
 
         // Map test run ID to a Test Suite Name
-        std::unordered_map<int, std::string> _testRun_TestSuiteNames;
+        std::unordered_map<int, std::string> _testRun_TestSuiteOrPapyrusScript;
 
         // Map test run ID to a Connection
         std::unordered_map<int, connection_hdl> _testRun_Connections;
+
+        // Map test run ID to a test type
+        std::unordered_map<int, TestRunType> _testRun_Types;
 
         // The queue of test runs to run
         std::queue<int> _testRun_ToRunQueue;
@@ -74,15 +83,28 @@ namespace SkySpec::Server {
         // Creates a 'testRun'
         void RunTestSuite(const std::string& testSuiteName, connection_hdl connection) {
             RE::ConsoleLog::GetSingleton()->Print(std::format("Request to run test suite {}", testSuiteName).c_str());
+
             int testSuiteRunID = _testRun_NextId++;
             // TODO - lock :)
-            _testRun_TestSuiteNames.insert_or_assign(testSuiteRunID, testSuiteName);
+            _testRun_TestSuiteOrPapyrusScript.insert_or_assign(testSuiteRunID, testSuiteName);
             _testRun_Connections.insert_or_assign(testSuiteRunID, connection);
             _testRun_ToRunQueue.push(testSuiteRunID);
+            _testRun_Types.insert_or_assign(testSuiteRunID, TestRunType::SKSE);
+        }
+
+        void RunPapyrusTest(const std::string& scriptName, connection_hdl connection) {
+            RE::ConsoleLog::GetSingleton()->Print(std::format("Request to run PAPYRUS test script {}", scriptName).c_str());
+            int testSuiteRunID = _testRun_NextId++;
+            // TODO - lock :)
+            _testRun_TestSuiteOrPapyrusScript.insert_or_assign(testSuiteRunID, scriptName);
+            _testRun_Connections.insert_or_assign(testSuiteRunID, connection);
+            _testRun_ToRunQueue.push(testSuiteRunID);
+            _testRun_Types.insert_or_assign(testSuiteRunID, TestRunType::Papyrus);
         }
 
         std::queue<int>& GetTestRunQueue() { return _testRun_ToRunQueue; }
-        std::string GetTestSuiteNameForRunId(int testRunId) { return _testRun_TestSuiteNames[testRunId]; }
+        std::string GetTestSuiteOrPapyrusScriptForRunId(int testRunId) { return _testRun_TestSuiteOrPapyrusScript[testRunId]; }
+        TestRunType GetTypeOfRunId(int testRunId) { return _testRun_Types[testRunId]; }
         void SetCurrentTestRunId(int testRunId) { _testRun_CurrentId = testRunId; }
 
         void NotifyText(const std::string& text) {
@@ -109,16 +131,27 @@ namespace SkySpec::Server {
                 auto& queue = server.GetTestRunQueue();
                 if (!queue.empty()) {
                     auto testRunId = queue.front(); queue.pop(); // TODO - lock!
-                    auto testSuiteName = server.GetTestSuiteNameForRunId(testRunId);
-                    auto& testRegistrations = TestSuiteRegistrations::GetSingleton();
-                    if (testRegistrations.IsTestSuiteRegistered(testSuiteName)) {
-                        auto fn = testRegistrations.GetTestSuiteRunnerFunction(testSuiteName);
-                        RE::ConsoleLog::GetSingleton()->Print(std::format("Running Test Suite '{}'", testSuiteName).c_str());
-                        server.SetCurrentTestRunId(testRunId);
-                        fn();
-                        server.SetCurrentTestRunId(0);
-                    } else {
-                        queue.push(testRunId);
+                    auto type = server.GetTypeOfRunId(testRunId);
+                    if (type == TestRunType::SKSE) {
+                        auto testSuiteName = server.GetTestSuiteOrPapyrusScriptForRunId(testRunId);
+                        auto& testRegistrations = TestSuiteRegistrations::GetSingleton();
+                        if (testRegistrations.IsTestSuiteRegistered(testSuiteName)) {
+                            auto fn = testRegistrations.GetTestSuiteRunnerFunction(testSuiteName);
+                            RE::ConsoleLog::GetSingleton()->Print(std::format("Running Test Suite '{}'", testSuiteName).c_str());
+                            server.SetCurrentTestRunId(testRunId);
+                            fn();
+                            server.SetCurrentTestRunId(0);
+                        } else {
+                            queue.push(testRunId);
+                        }
+                    } else if (type == TestRunType::Papyrus) {
+                        auto scriptName = server.GetTestSuiteOrPapyrusScriptForRunId(testRunId);
+                        // TODO move the lambdas to functions plz :)
+                        PapyrusSpec(scriptName).RunTests(
+                                [](const std::string& testName){ SpecServer::GetSingleton().NotifyTestPassed(testName); },
+                                [](const std::string& testName){ SpecServer::GetSingleton().NotifyTestFailed(testName); },
+                                [](const std::string& message){ SpecServer::GetSingleton().NotifyText(message); }
+                        );
                     }
                 }
                 std::this_thread::sleep_for(1s);
@@ -139,6 +172,9 @@ namespace SkySpec::Server {
                 } else if (messageText.find("RunTestSuite:") == 0 && messageText.length() > 13) {
                     auto testSuiteName = messageText.substr(13); // length of 'RunTestSuite:'
                     GetSingleton().RunTestSuite(testSuiteName, std::move(connection));
+                } else if (messageText.find("RunPapyrusTest:") == 0 && messageText.length() > 13) {
+                    auto papyrusScriptName = messageText.substr(15); // length of 'RunPapyrusTest:'
+                    GetSingleton().RunPapyrusTest(papyrusScriptName, std::move(connection));
                 }
             });
             try {
