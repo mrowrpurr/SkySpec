@@ -8,8 +8,11 @@ extern "C" __declspec(dllexport) bool SKSEAPI SKSEPlugin_Load(const SKSE::LoadIn
         if (event->type == SKSE::MessagingInterface::kDataLoaded) {
             RE::ConsoleLog::GetSingleton()->Print("Hi from this Bandit example! TODO: call the server!");
             SkySpec::Server::RegisterTestSuite("My Cool Test Suite", [](){
-//                // TODO have this call the Notify() functions! To print to the console of the client caller.
                 RE::ConsoleLog::GetSingleton()->Print("RAN MY COOL TEST SUITE!");
+                SkySpec::Server::NotifyText("This is text from My Cool Test Suite!");
+                SkySpec::Server::NotifyTestPassed("Something Passed!");
+                SkySpec::Server::NotifyTestFailed("Something Failed!");
+                RE::ConsoleLog::GetSingleton()->Print("DID STUFF PRINT OUT?");
             });
         }
     });

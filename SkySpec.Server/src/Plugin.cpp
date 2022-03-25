@@ -1,8 +1,6 @@
 #include <SKSE/SKSE.h>
 #include "SkySpec/Server.h"
 
-// TODO - use sdplog sink (or whatever) to output logs in SKSE folder
-
 extern "C" __declspec(dllexport) bool SKSEAPI SKSEPlugin_Load(const SKSE::LoadInterface* skse) {
     SKSE::Init(skse);
     SKSE::GetMessagingInterface()->RegisterListener([](SKSE::MessagingInterface::Message* event){

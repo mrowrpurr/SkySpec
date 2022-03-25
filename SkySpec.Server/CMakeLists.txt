@@ -10,7 +10,7 @@ file(GLOB_RECURSE SkySpecServer_Files ${CMAKE_CURRENT_SOURCE_DIR}/include/*.h ${
 
 add_library(SkySpecServer SHARED ${SkySpecServer_Files})
 target_include_directories(SkySpecServer PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/include)
-set_target_properties(SkySpecServer PROPERTIES OUTPUT_NAME "!SkySpec.Server")
+set_target_properties(SkySpecServer PROPERTIES OUTPUT_NAME "!!SkySpec.Server")
 
 find_package(websocketpp CONFIG REQUIRED)
 target_link_libraries(SkySpecServer PRIVATE websocketpp::websocketpp)

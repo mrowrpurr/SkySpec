@@ -49,6 +49,8 @@ namespace SkySpec::Server {
         // Get unique identifier for each test run
         std::atomic<int> _testRun_NextId;
 
+        int _testRun_CurrentId;
+
         // Map test run ID to a Test Suite Name
         std::unordered_map<int, std::string> _testRun_TestSuiteNames;
 
@@ -81,7 +83,21 @@ namespace SkySpec::Server {
 
         std::queue<int>& GetTestRunQueue() { return _testRun_ToRunQueue; }
         std::string GetTestSuiteNameForRunId(int testRunId) { return _testRun_TestSuiteNames[testRunId]; }
+        void SetCurrentTestRunId(int testRunId) { _testRun_CurrentId = testRunId; }
 
+        void NotifyText(const std::string& text) {
+            RE::ConsoleLog::GetSingleton()->Print(std::format("Trying to send message to notify text {}", text).c_str());
+            _webSocketServer.send(_testRun_Connections[_testRun_CurrentId], std::format("NotifyText:{}", text), frame::opcode::text);
+            RE::ConsoleLog::GetSingleton()->Print("Did the message send?");
+        }
+        void NotifyTestPassed(const std::string& text) {
+            _webSocketServer.send(_testRun_Connections[_testRun_CurrentId], std::format("NotifyTestPassed:{}", text), frame::opcode::text);
+        }
+        void NotifyTestFailed(const std::string& text) {
+            _webSocketServer.send(_testRun_Connections[_testRun_CurrentId], std::format("NotifyTestFailed:{}", text), frame::opcode::text);
+        }
+
+        // TODO Move the Watch functions into another class for better encapsulation please :)
         static void WatchQueueForTestsToRun() {
             std::thread testRunWatcherThread(WatchQueueLoop);
             testRunWatcherThread.detach();
@@ -98,7 +114,9 @@ namespace SkySpec::Server {
                     if (testRegistrations.IsTestSuiteRegistered(testSuiteName)) {
                         auto fn = testRegistrations.GetTestSuiteRunnerFunction(testSuiteName);
                         RE::ConsoleLog::GetSingleton()->Print(std::format("Running Test Suite '{}'", testSuiteName).c_str());
+                        server.SetCurrentTestRunId(testRunId);
                         fn();
+                        server.SetCurrentTestRunId(0);
                     } else {
                         queue.push(testRunId);
                     }
@@ -138,7 +156,7 @@ namespace SkySpec::Server {
     };
 
     __declspec(dllexport) void RegisterTestSuite(const std::string& testSuiteName, std::function<void()> testSuiteRunnerFn);
-    __declspec(dllexport) void NotifyText(int testRunId, const std::string& testSuiteName, const std::string& text);
-    __declspec(dllexport) void NotifyTestPassed(int testRunId, const std::string& testSuiteName, const std::string& testName);
-    __declspec(dllexport) void NotifyTestFailed(int testRunId, const std::string& testSuiteName, const std::string& testName);
+    __declspec(dllexport) void NotifyText(const std::string& text);
+    __declspec(dllexport) void NotifyTestPassed(const std::string& testName);
+    __declspec(dllexport) void NotifyTestFailed(const std::string& testName);
 }
