@@ -1,12 +1,16 @@
 #include <SKSE/SKSE.h>
 #include <RE/C/ConsoleLog.h>
+#include <SkySpec/Server.h>
 
 extern "C" __declspec(dllexport) bool SKSEAPI SKSEPlugin_Load(const SKSE::LoadInterface* skse) {
     SKSE::Init(skse);
     SKSE::GetMessagingInterface()->RegisterListener([](SKSE::MessagingInterface::Message* event){
         if (event->type == SKSE::MessagingInterface::kDataLoaded) {
             RE::ConsoleLog::GetSingleton()->Print("Hi from this Bandit example! TODO: call the server!");
-//            SkySpec::Server::SpecServer::GetSingleton().Run();
+            SkySpec::Server::RegisterTestSuite("My Cool Test Suite", [](){
+//                // TODO have this call the Notify() functions! To print to the console of the client caller.
+                RE::ConsoleLog::GetSingleton()->Print("RAN MY COOL TEST SUITE!");
+            });
         }
     });
     return true;

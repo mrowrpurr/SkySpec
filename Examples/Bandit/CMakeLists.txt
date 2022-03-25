@@ -11,6 +11,9 @@ file(GLOB_RECURSE SkySpec_Example_Bandit_Files ${CMAKE_CURRENT_SOURCE_DIR}/inclu
 add_library(SkySpec_Example_Bandit SHARED ${SkySpec_Example_Bandit_Files})
 target_include_directories(SkySpec_Example_Bandit PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/include)
 
+target_link_libraries(SkySpec_Example_Bandit PRIVATE SkySpecServer)
+target_include_directories(SkySpec_Example_Bandit PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/../../SkySpec.Server/include) # <--- FIXME
+
 find_package(CommonLibSSE CONFIG REQUIRED)
 target_link_libraries(SkySpec_Example_Bandit PRIVATE CommonLibSSE::CommonLibSSE)
 
@@ -23,3 +26,11 @@ add_custom_command(
 	COMMAND "${CMAKE_COMMAND}" -E copy_if_different "$<TARGET_FILE:${PROJECT_NAME}>" "${DLL_FOLDER}"
 	VERBATIM
 )
+
+add_executable(RunBanditTests ${CMAKE_CURRENT_SOURCE_DIR}/RunSpecs.cpp)
+
+# For now just run directly
+find_package(websocketpp CONFIG REQUIRED)
+target_link_libraries(RunBanditTests PRIVATE websocketpp::websocketpp)
+find_package(Boost REQUIRED COMPONENTS random)
+target_link_libraries(RunBanditTests PRIVATE Boost::boost Boost::random)

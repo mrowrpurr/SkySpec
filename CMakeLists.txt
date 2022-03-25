@@ -7,6 +7,7 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
 
 add_subdirectory(SkySpec)
+add_subdirectory(SkySpec.Server)
 add_subdirectory(SkySpec.TestRunner)
 add_subdirectory(SkySpec.TestRunner.Exe)
 add_subdirectory(Examples)

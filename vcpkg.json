@@ -8,6 +8,9 @@
     "supports": "windows & x64",
     "dependencies": [
         { "name": "vcpkg-cmake-config", "host": true },
-        "commonlibae"
+        "commonlibae",
+        "bandit",
+        "websocketpp",
+        "boost-random"
     ]
 }
