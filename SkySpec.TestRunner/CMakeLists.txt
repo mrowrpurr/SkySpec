@@ -17,6 +17,20 @@ target_sources(SkySpec_Runner PRIVATE ${SkySpec_Runner_Cpp})
 target_include_directories(SkySpec_Runner PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/include)
 
 if("${CMAKE_SOURCE_DIR}" STREQUAL "${CMAKE_CURRENT_SOURCE_DIR}")
-    install(TARGETS SkySpec_Runner DESTINATION lib)
+    install(TARGETS tiny-process-library
+        EXPORT skyspec-runner-config
+        ARCHIVE DESTINATION lib
+        LIBRARY DESTINATION lib
+        RUNTIME DESTINATION bin
+    )
+
+    # Namespace was just ${project_name}::
+    install(EXPORT skyspec-runner-config
+        FILE skyspec-runner-config.cmake
+        NAMESPACE SkySpec::Runner
+        DESTINATION lib/cmake/skyspec-runner
+    )
+
     install(FILES ${SkySpec_Runner_Headers} DESTINATION include)
 endif()
+
