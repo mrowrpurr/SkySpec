@@ -14,7 +14,6 @@ file(GLOB_RECURSE SkySpec_Runner_Cpp ${CMAKE_CURRENT_SOURCE_DIR}/src/*.cpp)
 add_library(SkySpec_Runner ${SkySpec_Runner_Files})
 add_library(SkySpec::Runner ALIAS SkySpec_Runner)
 target_sources(SkySpec_Runner PRIVATE ${SkySpec_Runner_Cpp})
-target_include_directories(SkySpec_Runner PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/include)
 
 if("${CMAKE_SOURCE_DIR}" STREQUAL "${CMAKE_CURRENT_SOURCE_DIR}")
     install(TARGETS SkySpec_Runner
@@ -32,5 +31,6 @@ if("${CMAKE_SOURCE_DIR}" STREQUAL "${CMAKE_CURRENT_SOURCE_DIR}")
     )
 
     install(FILES ${SkySpec_Runner_Headers} DESTINATION include)
+else()
+    target_include_directories(SkySpec_Runner PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/include)
 endif()
-
