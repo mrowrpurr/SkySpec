@@ -17,7 +17,7 @@ target_sources(SkySpec_Runner PRIVATE ${SkySpec_Runner_Cpp})
 target_include_directories(SkySpec_Runner PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/include)
 
 if("${CMAKE_SOURCE_DIR}" STREQUAL "${CMAKE_CURRENT_SOURCE_DIR}")
-    install(TARGETS tiny-process-library
+    install(TARGETS SkySpec_Runner
         EXPORT skyspec-runner-config
         ARCHIVE DESTINATION lib
         LIBRARY DESTINATION lib
