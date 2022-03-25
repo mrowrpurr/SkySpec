@@ -28,8 +28,9 @@ add_custom_command(
 )
 
 add_executable(RunBanditTests ${CMAKE_CURRENT_SOURCE_DIR}/RunSpecs.cpp)
+target_include_directories(RunBanditTests PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/../../SkySpec.Runner/include) # <--- FIXME
 
-# For now just run directly
+# Needed until we make it a linkable library (?)
 find_package(websocketpp CONFIG REQUIRED)
 target_link_libraries(RunBanditTests PRIVATE websocketpp::websocketpp)
 find_package(Boost REQUIRED COMPONENTS random)
