@@ -10,6 +10,8 @@ file(GLOB_RECURSE SkySpecRunner_Files ${CMAKE_CURRENT_SOURCE_DIR}/include/*.h)
 
 add_library(SkySpecRunner INTERFACE ${SkySpecRunner_Files})
 target_include_directories(SkySpecRunner INTERFACE ${CMAKE_CURRENT_SOURCE_DIR}/include)
+target_include_directories(SkySpecRunner INTERFACE ${CMAKE_CURRENT_SOURCE_DIR}/../SkySpec.Papyrus/include) # <-- FIXME
+target_include_directories(SkySpecRunner INTERFACE ${CMAKE_CURRENT_SOURCE_DIR}/../Papyrus.Reflection/include) # <-- FIXME
 find_package(websocketpp CONFIG REQUIRED)
 target_link_libraries(SkySpecRunner INTERFACE websocketpp::websocketpp)
 find_package(Boost REQUIRED COMPONENTS random)

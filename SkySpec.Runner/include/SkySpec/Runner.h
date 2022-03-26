@@ -87,10 +87,10 @@ namespace SkySpec {
 
         void Run() {
             auto uri = std::format("ws://localhost:{}", _webSocketPort);
-//            _webSocketClient.set_access_channels(websocketpp::log::alevel::none);
-//            _webSocketClient.clear_access_channels(websocketpp::log::alevel::all);
-//            _webSocketClient.set_error_channels(websocketpp::log::alevel::none);
-//            _webSocketClient.clear_error_channels(websocketpp::log::alevel::all);
+            _webSocketClient.set_access_channels(websocketpp::log::alevel::none);
+            _webSocketClient.clear_access_channels(websocketpp::log::alevel::all);
+            _webSocketClient.set_error_channels(websocketpp::log::alevel::none);
+            _webSocketClient.clear_error_channels(websocketpp::log::alevel::all);
             _webSocketClient.set_open_handler([](const connection_hdl& connection){
                 Runner::GetSingleton().SetConnection(connection);
             });

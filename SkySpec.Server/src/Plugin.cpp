@@ -1,8 +1,11 @@
 #include <SKSE/SKSE.h>
+#include <SkySpec/Papyrus/Internal/PapyrusFunctionBindings.h>
+
 #include "SkySpec/Server.h"
 
 extern "C" __declspec(dllexport) bool SKSEAPI SKSEPlugin_Load(const SKSE::LoadInterface* skse) {
     SKSE::Init(skse);
+    SKSE::GetPapyrusInterface()->Register(SkySpec::Papyrus::Internal::BindPapyrusFunctions);
     SKSE::GetMessagingInterface()->RegisterListener([](SKSE::MessagingInterface::Message* event){
         if (event->type == SKSE::MessagingInterface::kDataLoaded) {
             SkySpec::Server::SpecServer::GetSingleton().Run();

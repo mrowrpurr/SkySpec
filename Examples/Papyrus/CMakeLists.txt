@@ -10,6 +10,8 @@ file(GLOB_RECURSE SkySpec_Example_Papyrus_Files ${CMAKE_CURRENT_SOURCE_DIR}/incl
 
 add_executable(RunPapyrusTests ${CMAKE_CURRENT_SOURCE_DIR}/RunSpecs.cpp)
 target_include_directories(RunPapyrusTests PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/../../SkySpec.Runner/include) # <--- FIXME
+target_include_directories(RunPapyrusTests PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/../../SkySpec.Papyrus/include) # <--- FIXME
+target_include_directories(RunPapyrusTests PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/../../Papyrus.Reflection/include) # <--- FIXME
 
 # Needed until we make it a linkable library (?)
 find_package(websocketpp CONFIG REQUIRED)
