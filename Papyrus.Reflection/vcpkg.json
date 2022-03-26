@@ -1,0 +1,13 @@
+{
+    "$schema": "https://raw.githubusercontent.com/microsoft/vcpkg/master/scripts/vcpkg.schema.json",
+    "name": "skyrim-papyrus-reflection",
+    "version-string": "0.0.1",
+    "description": "Library simplifying working with Papyrus scripts, e.g. function listing and invocation",
+    "homepage": "https://github.com/mrowrpurr/SkySpec",
+    "license": "MIT",
+    "supports": "windows & x64",
+    "dependencies": [
+        { "name": "vcpkg-cmake-config", "host": true },
+        "commonlibae"
+    ]
+}

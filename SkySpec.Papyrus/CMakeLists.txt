@@ -10,5 +10,6 @@ file(GLOB_RECURSE SkySpecPapyrus_Files ${CMAKE_CURRENT_SOURCE_DIR}/include/*.h)
 
 add_library(SkySpecPapyrus INTERFACE ${SkySpecPapyrus_Files})
 target_include_directories(SkySpecPapyrus INTERFACE ${CMAKE_CURRENT_SOURCE_DIR}/include)
+target_include_directories(SkySpecPapyrus INTERFACE ${CMAKE_CURRENT_SOURCE_DIR}/../Papyrus.Reflection/include) # <-- FIXME
 find_package(CommonLibSSE CONFIG REQUIRED)
 target_link_libraries(SkySpecPapyrus PRIVATE CommonLibSSE::CommonLibSSE)

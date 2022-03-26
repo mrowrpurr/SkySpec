@@ -1,18 +1,18 @@
+#pragma once
+
 #include <functional>
 #include <string>
 #include <utility>
 
 #pragma warning(push)
-
 #include <RE/Skyrim.h>
 #include <SKSE/SKSE.h>
 #include <RE/C/ConsoleLog.h>
-#include <RE/T/TESDataHandler.h>
-#include <RE/P/PlayerCharacter.h>
+#pragma warning(pop)
 
-//using namespace RE;
-using namespace RE::BSScript;
-using namespace RE::BSScript::Internal;
+#include <Papyrus/Reflection.h>
+
+using namespace Papyrus::Reflection;
 
 namespace SkySpec {
     class PapyrusSpec {
@@ -23,32 +23,17 @@ namespace SkySpec {
 
         std::string GetScriptName() { return _scriptName; }
 
-        void InitializeScript() {
-            auto scriptName = GetScriptName();
-            auto* vm = VirtualMachine::GetSingleton();
-            auto* character = RE::PlayerCharacter::GetSingleton();
-            auto* handlePolicy = vm->GetObjectHandlePolicy();
+        void RunTestFunction(const std::string testFunctionName) {
 
-            // Get a handle for the character
-            RE::VMHandle handle = handlePolicy->GetHandleForObject(character->GetFormType(), character);
-
-            RE::ConsoleLog::GetSingleton()->Print("Binding the BindMe script...");
-
-            // Force load the BindMe script
-            vm->linker.Process(RE::BSFixedString(scriptName));
-
-            // Create an object for this script
-            RE::BSTSmartPointer<Object> objectPtr;
-            vm->CreateObject(scriptName, objectPtr);
-
-            // Bind it!
-            auto* bindPolicy = vm->GetObjectBindPolicy();
-            bindPolicy->BindObject(objectPtr, handle);
         }
 
         void RunTests(const std::function<void(const std::string&)>& onTestPassed, const std::function<void(const std::string&)>& onTestFailed, const std::function<void(const std::string&)>& onMessage) {
-            onMessage("YO WASSUP FROM THE PAPYRUS TEST RUNNER!?");
-            InitializeScript();
+            auto script = PapyrusScript(_scriptName);
+            auto functionNames = script.GetFunctionNames();
+            onMessage(std::format("{} has {} functions", _scriptName, functionNames.size()));
+            for (auto functionName : functionNames) {
+                onMessage(std::format("{} has function {}", _scriptName, functionName));
+            }
         }
     };
 }

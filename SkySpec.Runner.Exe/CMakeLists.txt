@@ -10,3 +10,7 @@ file(GLOB_RECURSE SkySpecRunnerExe_Files ${CMAKE_CURRENT_SOURCE_DIR}/include/*.h
 
 add_executable(SkySpecRunnerExe ${SkySpecRunnerExe_Files})
 target_include_directories(SkySpecRunnerExe PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/../SkySpec.Runner/include) # <-- FIXME
+find_package(websocketpp CONFIG REQUIRED)
+target_link_libraries(SkySpecRunnerExe PRIVATE websocketpp::websocketpp)
+find_package(Boost REQUIRED COMPONENTS random)
+target_link_libraries(SkySpecRunnerExe PRIVATE Boost::boost Boost::random)

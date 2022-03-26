@@ -9,4 +9,4 @@ set(CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
 file(GLOB_RECURSE SkySpec_Files ${CMAKE_CURRENT_SOURCE_DIR}/*.h)
 
 add_library(SkySpec INTERFACE ${SkySpec_Files})
-target_include_directories(SkySpec INTERFACE ${CMAKE_CURRENT_SOURCE_DIR/include})
+target_include_directories(SkySpec INTERFACE ${CMAKE_CURRENT_SOURCE_DIR}/include)
