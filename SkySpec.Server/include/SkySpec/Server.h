@@ -10,6 +10,7 @@
 #include <RE/C/ConsoleLog.h>
 #include <REL/Relocation.h>
 #include <SKSE/SKSE.h>
+#pragma warning(pop)
 
 #include <websocketpp/server.hpp>
 #include <websocketpp/config/asio_no_tls.hpp>
