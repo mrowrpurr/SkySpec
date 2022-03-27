@@ -92,6 +92,7 @@ namespace SkySpec {
             for (const auto& functionName : functionNames) { RunFunction(functionName); }
         }
 
+        // TODO - maybe remove these arguments? and don't use the callbacks at all?
         void RunTests(const std::function<void(const std::string&)>& onTestPassed, const std::function<void(const std::string&)>& onTestFailed, const std::function<void(const std::string&)>& onMessage) {
             DetectTestFunctions();
             if (! _testFunctions.empty()) {

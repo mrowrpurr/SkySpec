@@ -86,6 +86,7 @@ namespace Papyrus::Reflection {
             RE::VMHandle handle = handlePolicy->GetHandleForObject(character->GetFormType(), character);
             for (auto& script : vm->attachedScripts.find(handle)->second) {
                 auto* typeInfo = script->GetTypeInfo();
+                RE::ConsoleLog::GetSingleton()->Print(std::format("Type attached to player: {}", typeInfo->GetName()).c_str());
                 if (RE::BSFixedString(typeInfo->GetName()) == RE::BSFixedString(_scriptName)) {
                     auto functionCount = typeInfo->GetNumMemberFuncs();
                     auto* functions = typeInfo->GetMemberFuncIter();
